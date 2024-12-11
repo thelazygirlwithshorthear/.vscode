@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+	<xs:simpleType name="ElementType">
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="question"/>
+				<xs:enumeration value="loop"/>
+				<xs:enumeration value="chapter"/>
+			</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="QuestionType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="closed"/>
+			<xs:enumeration value="numeric"/>
+			<xs:enumeration value="date" />
+			<xs:enumeration value="open" />
+			<xs:enumeration value="table" />
+			<xs:enumeration value="iteration" />
+			<xs:enumeration value="preliminary" />
+			<xs:enumeration value="counter" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Survey">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Languages">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Language">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Questions">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Question">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Versions" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" ref="Version">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Tags" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" ref="Tag">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Routings" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Routing">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ErrorMessages">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" ref="ErrorMessage">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ScreenGroups">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ScreenGroup" minOccurs="0">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Resources" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Resource">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="InternetOptions" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="Version"       type="xs:decimal"      use="required" />
+			<xs:attribute name="Full"          type="xs:unsignedByte" use="required" />
+			<xs:attribute name="MaxQuestionID" type="xs:unsignedByte" use="required" />
+			<xs:attribute name="MaxResponseID" type="xs:unsignedByte" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Question">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="LongCaption">
+					<xs:complexType mixed="true">
+						<xs:sequence minOccurs="0">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute ref="xml:lang" use="required" />
+											<xs:attribute name="Lid" type="xs:unsignedShort" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" name="ShortCaption">
+					<xs:complexType mixed="true">
+						<xs:sequence minOccurs="0">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute ref="xml:lang" use="required" />
+											<xs:attribute name="Lid" type="xs:unsignedShort" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Importation" minOccurs="0">
+					<xs:complexType>
+						<xs:attribute name="Type"      type="xs:unsignedByte" use="required" />
+						<xs:attribute name="Closed"    type="xs:unsignedByte" use="required" />
+						<xs:attribute name="Parameter" type="xs:string"       use="required" />
+						<xs:attribute name="DB"        type="xs:string"       use="required" />
+						<xs:attribute name="Invisible" type="xs:unsignedByte" use="required" />
+					</xs:complexType>
+				</xs:element >
+				<xs:element minOccurs="0" name="Modalities">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" ref="Modality" />							
+						</xs:sequence>
+						<xs:attribute name="RotationType" type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="RotationSeed" type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="LinkType"     type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="LinkSource"   type="xs:unsignedByte" use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" name="Routings">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Routing">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" name="Questions">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Question">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"                type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Shortcut"          type="xs:string"       use="required" />
+			<xs:attribute name="System"            type="xs:boolean"      use="optional" />
+			<xs:attribute name="Order"             type="xs:unsignedLong" use="optional" />
+			<xs:attribute name="ElementType"                              use="required" />
+			<xs:attribute name="AllowDK"           type="xs:boolean"      use="optional" />
+			<xs:attribute name="QuestionType"      type="QuestionType"    use="optional" />
+			<xs:attribute name="Anonymity"         type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="Multiple"          type="xs:boolean"      use="optional" />
+			<xs:attribute name="Min"               type="xs:decimal"      use="optional" />
+			<xs:attribute name="Max"               type="xs:decimal"      use="optional" />
+			<xs:attribute name="SemiOpen"          type="xs:boolean"      use="optional" />
+			<xs:attribute name="SemiOpenMandatory" type="xs:boolean"      use="optional" />
+			<xs:attribute name="Ordered"           type="xs:boolean"      use="optional" />
+			<xs:attribute name="Decimals"          type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="NREntry"           type="xs:string"       use="optional" />
+			<xs:attribute name="MaxResponse"       type="xs:unsignedLong" use="optional" />
+			<xs:attribute name="MinResponse"       type="xs:unsignedLong" use="optional" />
+			<xs:attribute name="MaxChars"          type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="UseAsArray"        type="xs:boolean"      use="optional" />
+			<xs:attribute name="Pause"             type="xs:boolean"      use="optional" />
+			<xs:attribute name="DateType"          type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="RotationType"      type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="RotationSeed"      type="xs:unsignedInt"  use="optional" /> 
+			<xs:attribute name="Visible"           type="xs:boolean"      use="optional" />
+			<xs:attribute name="InAnalyse"         type="xs:boolean"      use="optional" />
+			<xs:attribute name="Translated"        type="xs:boolean"      use="optional" />
+			<xs:attribute name="Quota"             type="xs:boolean"      use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Routing">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Condition">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attribute name="ConditionType" type="xs:unsignedShort" use="required" />
+								<xs:attribute name="Responses"     type="xs:string"        use="optional" />
+								<xs:attribute name="Value1"        type="xs:decimal"       use="optional" />
+								<xs:attribute name="Value2"        type="xs:decimal"       use="optional" />
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Message" minOccurs="0">
+					<xs:complexType mixed="true">
+						<xs:sequence minOccurs="0">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string"> 
+											<xs:attribute ref="xml:lang" use="required" />
+											<xs:attribute name="Lid"     use="required" type="xs:unsignedShort" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Ignored" minOccurs="0" >
+					<xs:complexType>
+						<xs:attribute name="Gui" type="xs:unsignedShort" default="0" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Desc"          minOccurs="0" type="xs:string" />
+				<xs:element name="IfTrue"        minOccurs="0" type="xs:string" />
+				<xs:element name="IfFalse"       minOccurs="0" type="xs:string" />
+				<xs:element name="QuestionOrder" minOccurs="0" type="xs:string" />
+				<xs:element name="ResponseOrder" minOccurs="0" type="xs:string" />
+				<xs:element name="DB"            minOccurs="0" type="xs:string" />
+				<xs:element name="Query"         minOccurs="0" type="xs:string" />
+				<xs:element name="Program"       minOccurs="0" type="xs:string" />
+				<xs:element name="Parameters"    minOccurs="0" type="xs:string" />
+				<xs:element name="EmailInfo"     minOccurs="0" type="xs:string" />
+				<xs:element name="ConjointInfo"  minOccurs="0" type="xs:string" />
+				<xs:element name="Recording"     minOccurs="0" type="xs:string" />
+				<xs:element name="WebService" 	 minOccurs="0" >
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="URL"  type="xs:string" />
+							<xs:element name="Body" type="xs:string" />
+							<xs:element name="Header" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="Name"  type="xs:string" />
+									<xs:attribute name="Value" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="OnSuccess" type="xs:unsignedLong" />
+							<xs:element name="OnError"   type="xs:unsignedLong" />
+						</xs:sequence>
+						<xs:attribute name="Method"    type="xs:string"        use="required" />
+						<xs:attribute name="Wait"      type="xs:boolean"       use="required" />
+						<xs:attribute name="Interface" type="xs:unsignedShort" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"             type="xs:unsignedByte"  use="required" />
+			<xs:attribute name="StartQuestion"  type="xs:unsignedLong"  use="optional" />
+			<xs:attribute name="Type"           type="xs:unsignedByte"  use="required" />
+			<xs:attribute name="TargetQuestion" type="xs:unsignedByte"  use="required" />
+			<xs:attribute name="LanguageID"     type="xs:unsignedShort" use="optional" />
+			<xs:attribute name="Primary"        type="xs:unsignedShort" use="optional" />
+			<xs:attribute name="Secondary"      type="xs:unsignedShort" use="optional" />
+			<xs:attribute name="Blocking"       type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="VersionID"      type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Charset"        type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Before"         type="xs:boolean"       use="optional" default="0" />
+			<xs:attribute name="After"          type="xs:boolean"       use="optional" default="1" />
+			<xs:attribute name="During"         type="xs:boolean"       use="optional" default="0" />
+			<xs:attribute name="WhenSkipped"    type="xs:boolean"       use="optional" default="0" />
+			<xs:attribute name="OnError"        type="xs:boolean"       use="optional" default="0" />
+			<xs:attribute name="Edit"           type="xs:boolean"       use="optional" default="0" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Modality">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ShortCaption">
+					<xs:complexType mixed="true">
+						<xs:sequence minOccurs="0">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute ref="xml:lang" use="required" />
+											<xs:attribute name="Lid" type="xs:unsignedShort" use="required" />
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"         type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Behaviour"  type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="Exclusive"  type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="Factor"     type="xs:decimal"      use="optional" />
+			<xs:attribute name="EC"         type="xs:string"       use="optional" />
+			<xs:attribute name="Deleted"    type="xs:boolean"      use="optional" />
+			<xs:attribute name="Selectable" type="xs:boolean"      use="optional" default="1" />
+			<xs:attribute name="BaseType"   type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="Translated" type="xs:boolean"      use="optional" default="1" />
+			<xs:attribute name="Resource"   type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="ResourceID" type="xs:unsignedByte" use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Resource">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="InControl" type="xs:string" />
+				<xs:element name="Params"    type="xs:string" />
+				<xs:element name="Mime"      type="xs:string" />
+				<xs:element name="Path"      type="xs:string" />
+			</xs:sequence>
+			<xs:attribute name="ID"         type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Name"       type="xs:string"       use="required" />
+			<xs:attribute name="Type"       type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Code"       type="xs:unsignedByte" use="required" />
+			<xs:attribute name="LanguageID" type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Checksum"   type="xs:unsignedInt"  use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InternetOptions">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Buttons">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="PrevBmp"        type="xs:string" minOccurs="0" />
+							<xs:element name="NextBmp"        type="xs:string" minOccurs="0" />
+							<xs:element name="Between"        type="xs:string" minOccurs="0" />
+							<xs:element name="PrevButtonProp" type="xs:string" minOccurs="0" />
+							<xs:element name="NextButtonProp" type="xs:string" minOccurs="0" />
+							<xs:element name="Before"         type="xs:string" minOccurs="0" />
+							<xs:element name="After"          type="xs:string" minOccurs="0" />
+						</xs:sequence>
+						<xs:attribute name="Prev"    type="xs:boolean"      use="optional" />
+						<xs:attribute name="Pos"     type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="OffsetX" type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="OffsetY" type="xs:unsignedByte" use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Page">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Header"     type="xs:string" minOccurs="0" />
+							<xs:element name="Footer"     type="xs:string" minOccurs="0" />
+							<xs:element name="Body"       type="xs:string" minOccurs="0" />
+							<xs:element name="Html"       type="xs:string" minOccurs="0" />
+							<xs:element name="Head"       type="xs:string" minOccurs="0" />
+							<xs:element name="BeforeCont" type="xs:string" minOccurs="0" />
+							<xs:element name="AfterCont"  type="xs:string" minOccurs="0" />
+						</xs:sequence>
+						<xs:attribute name="Layout"   type="xs:unsignedByte" use="required" />
+						<xs:attribute name="Unit"     type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="Width"    type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="MargX"    type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="MargY"    type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="Flow"     type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="GenWidth" type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="GenCol"   type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="HtmlType" type="xs:unsignedByte" use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ThemeADP">					
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Theme">
+								<xs:complexType>
+									<xs:attribute name="FontFamily"          type="xs:string"       use="optional" />
+									<xs:attribute name="BaseFS"              type="xs:string"       use="optional" />
+									<xs:attribute name="LargeFS"             type="xs:string"       use="optional" />
+									<xs:attribute name="NormalFS"            type="xs:string"       use="optional" />
+									<xs:attribute name="SmallFS"             type="xs:string"       use="optional" />
+									<xs:attribute name="LineHeight"          type="xs:string"       use="optional" />
+									<xs:attribute name="BorderWidth"         type="xs:string"       use="optional" />
+									<xs:attribute name="BorderRadius"        type="xs:string"       use="optional" />
+									<xs:attribute name="HPadding"            type="xs:string"       use="optional" />
+									<xs:attribute name="VPadding"            type="xs:string"       use="optional" />
+									<xs:attribute name="WhiteColor"          type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="BlackColor"          type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="PrimaryColor"        type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="PrimaryDarkColor"    type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="PrimaryLightColor"   type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="SecondaryColor"      type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="SecondaryDarkColor"  type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="SecondaryLightColor" type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="NeutralColor"        type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="NeutralDarkColor"    type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="NeutralLightColor"   type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="ErrorColor"          type="xs:unsignedByte" use="optional" />
+									<xs:attribute name="SuccessColor"        type="xs:unsignedByte" use="optional" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AdpPage" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="AdxProperty" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="AdxName"  type="xs:string" />
+													<xs:element name="AdxValue" type="xs:string" />
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="mainAdp" type="xs:string" use="optional" />
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MainCss"        type="xs:string" />
+							<xs:element name="MainJavaScript" type="xs:string" />
+						</xs:sequence>
+						<xs:attribute name="MainADP" type="xs:string" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Errors">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Before"     type="xs:string" minOccurs="0" />
+							<xs:element name="Between"    type="xs:string" minOccurs="0" />
+							<xs:element name="After"      type="xs:string" minOccurs="0" />
+							<xs:element name="CtrlTR"     type="xs:string" minOccurs="0" />
+							<xs:element name="CtrlTD"     type="xs:string" minOccurs="0" />
+							<xs:element name="CtrlBefore" type="xs:string" minOccurs="0" />
+							<xs:element name="CtrlAfter"  type="xs:string" minOccurs="0" />
+							<xs:element name="CtrlInCtrl" type="xs:string" minOccurs="0" />
+						</xs:sequence>
+						<xs:attribute name="Display" type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="FShift"  type="xs:unsignedByte" use="optional" />
+						<xs:attribute name="PShift"  type="xs:unsignedByte" use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Table">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="TblTag"    type="xs:string" minOccurs="0" />
+							<xs:element name="HdrColTxt" type="xs:string" minOccurs="0" />
+							<xs:element name="HdrColTd"  type="xs:string" minOccurs="0" />
+							<xs:element name="DefTd"     type="xs:string" minOccurs="0" />
+						</xs:sequence>
+						<xs:attribute name="HdrCol" type="xs:unsignedByte" use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="JavaScript">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="LivePath"     type="xs:string" minOccurs="0" />
+							<xs:element name="TestPath"     type="xs:string" minOccurs="0" />
+							<xs:element name="ResLivePath"  type="xs:string" minOccurs="0" />
+							<xs:element name="RestTestPath" type="xs:string" minOccurs="0" />
+							<xs:element name="Skin"         type="xs:string" minOccurs="0" />
+						</xs:sequence>
+						<xs:attribute name="Script"      type="xs:unsignedByte"  use="optional" />
+						<xs:attribute name="Version"     type="xs:string"        use="optional" />
+						<xs:attribute name="Validation"  type="xs:unsignedShort" use="optional" />
+						<xs:attribute name="FlyVal"      type="xs:unsignedByte"  use="optional" />
+						<xs:attribute name="ValLayer"    type="xs:unsignedByte"  use="optional" />
+						<xs:attribute name="LiveRouting" type="xs:unsignedByte"  use="optional" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Exit">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Final"      type="xs:string" minOccurs="0" />
+							<xs:element name="Pause"      type="xs:string" minOccurs="0" />
+							<xs:element name="Offline"    type="xs:string" minOccurs="0" />
+							<xs:element name="Completed"  type="xs:string" minOccurs="0" />
+							<xs:element name="Error"      type="xs:string" minOccurs="0" />
+							<xs:element name="OutOfQuota" type="xs:string" minOccurs="0" />
+							<xs:element name="ScreenOut"  type="xs:string" minOccurs="0" />
+						</xs:sequence> 
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"          type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="Name"        type="xs:string"       use="optional" />
+			<xs:attribute name="Cookies"     type="xs:boolean"      use="optional" />
+			<xs:attribute name="Duration"    type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="StoreQuota"  type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="ConnTimeOut" type="xs:unsignedLong" use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ScreenGroup">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Template" type="xs:string" minOccurs="0" />
+				<xs:element name="Screen"   type="xs:string" minOccurs="0" />
+				<xs:element name="Question" type="xs:string" minOccurs="0" />
+				<xs:element name="Chapter"  type="xs:string" minOccurs="0" />
+				<xs:element name="Response" type="xs:string" minOccurs="0" />
+				<xs:element name="Open"     type="xs:string" minOccurs="0" />
+				<xs:element name="Numeric"  type="xs:string" minOccurs="0" />
+				<xs:element name="Label"    type="xs:string" minOccurs="0" />
+				<xs:element name="List"     type="xs:string" minOccurs="0" />
+				<xs:element name="Item"     type="xs:string" minOccurs="0" />
+				<xs:element name="Blocks"   type="xs:string" minOccurs="0" />
+				<xs:element name="Button"   type="xs:string" minOccurs="0" />
+				<xs:element name="IO"       type="xs:string" minOccurs="0" />
+				<xs:element name="Screens">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" ref="Screen">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"   type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Name" type="xs:string"       use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Screen">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IO" type="xs:string" minOccurs="0" />
+				<xs:element name="Controls">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element maxOccurs="unbounded" ref="Control">
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"       type="xs:unsignedByte" use="required" />
+			<xs:attribute name="Name"     type="xs:string"       use="required" />
+			<xs:attribute name="BackCol"  type="xs:unsignedInt"  use="optional" />
+			<xs:attribute name="ForeCol"  type="xs:unsignedInt"  use="optional" />
+			<xs:attribute name="Deleted"  type="xs:unsignedByte" use="optional" />
+			<xs:attribute name="FormType" type="xs:string"       use="optional" />
+			<xs:attribute name="MaxForms" type="xs:byte"         use="optional" />
+			<xs:attribute name="Auto"     type="xs:unsignedByte" use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Control">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Caption"  type="xs:string" minOccurs="0" />
+				<xs:element name="DynRes"   type="xs:string" minOccurs="0" />
+				<xs:element name="Cell"     type="xs:string" minOccurs="0" />
+				<xs:element name="Before"   type="xs:string" minOccurs="0" />
+				<xs:element name="After"    type="xs:string" minOccurs="0" />
+				<xs:element name="Line"     type="xs:string" minOccurs="0" />
+				<xs:element name="InCtrl"   type="xs:string" minOccurs="0" />
+				<xs:element name="Block"    type="xs:string" minOccurs="0" />
+				<xs:element name="MMInCtrl" type="xs:string" minOccurs="0" />
+				<xs:element name="MMAfter"  type="xs:string" minOccurs="0" />
+				<xs:element name="Custom"   type="xs:string" minOccurs="0" />
+				<xs:element name="Class"    type="xs:string" minOccurs="0" />
+				<xs:element name="Font">
+					<xs:complexType>
+						<xs:attribute name="Face" type="xs:string"        use="required" />
+						<xs:attribute name="H"    type="xs:unsignedShort" use="required" />
+						<xs:attribute name="B"    type="xs:unsignedByte"  use="optional" />
+						<xs:attribute name="I"    type="xs:unsignedByte"  use="optional" />
+						<xs:attribute name="U"    type="xs:unsignedByte"  use="optional" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="ID"       type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Deleted"  type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Question" type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Type"     type="xs:unsignedByte"  use="required" />
+			<xs:attribute name="BackCol"  type="xs:unsignedInt"   use="optional" />
+			<xs:attribute name="ForeCol"  type="xs:unsignedInt"   use="optional" />
+			<xs:attribute name="Trans"    type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="FormPos"  type="xs:unsignedInt"   use="optional" />
+			<xs:attribute name="X"        type="xs:unsignedShort" use="required" />
+			<xs:attribute name="Y"        type="xs:unsignedShort" use="required" />
+			<xs:attribute name="W"        type="xs:unsignedShort" use="required" />
+			<xs:attribute name="H"        type="xs:unsignedShort" use="required" />
+			<xs:attribute name="Resource" type="xs:unsignedInt"   use="optional" />
+			<xs:attribute name="Auto"     type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Full"     type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Stretch"  type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Ratio"    type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Play"     type="xs:unsignedShort" use="optional" />
+			<xs:attribute name="Sort"     type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Dynamic"  type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Align"    type="xs:unsignedShort" use="optional" />
+			<xs:attribute name="Live"     type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="HLevel"   type="xs:unsignedInt"   use="optional" />
+			<xs:attribute name="AutoH"    type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="HtmlPos"  type="xs:unsignedShort" use="optional" />
+			<xs:attribute name="CtrlH"    type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Error"    type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="GenFont"  type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="CtrlW"    type="xs:unsignedByte"  use="optional" />
+			<xs:attribute name="Response" type="xs:byte"          use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ErrorMessage">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="ID" type="xs:unsignedInt" use="required" />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Language"  >
+		<xs:complexType>
+			<xs:attribute name="ID"      type="xs:unsignedShort" use="required" />
+			<xs:attribute name="Abbr"    type="xs:string"        use="required" />
+			<xs:attribute name="Name"    type="xs:string"        use="required" />
+			<xs:attribute name="Default" type="xs:unsignedByte"  use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Version"  >
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="ID"   type="xs:unsignedShort" use="required" />
+			<xs:attribute name="Name" type="xs:string"        use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Tag"  >
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="ID"   type="xs:unsignedShort" use="required" />
+			<xs:attribute name="Name" type="xs:string"        use="required" />
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

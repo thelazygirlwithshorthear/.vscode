@@ -1,0 +1,76 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "HMMM",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#registers"
+		},
+		{
+			"include": "#labels"
+		},
+		{
+			"include": "#numbers"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.hmmm",
+					"match": "\\b(halt|read|write|nop|setn|addn|copy|add|sub|neg|mul|div|mod|jumpn|jumpr|jeqzn|jnezn|jgtzn|jltzn|calln|pushr|popr|loadn|storen|loadr|storer)\\b"
+				},
+				{
+					"name": "keyword.control.hmmm.alias",
+					"match": "\\b(mov|jump|jeqz|jnez|jgtz|jltz|call|loadi|load|storei|store)\\b"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.hmmm",
+					"match": "#.*$"
+				}
+			]
+		},
+		"registers": {
+			"patterns": [
+				{
+					"name": "support.constant.hmmm",
+					"match": "\\br0\\b"
+				},
+				{
+					"name": "support.variable.hmmm",
+					"match": "\\br1[3-5]\\b"
+				},
+				{
+					"name": "variable.language.register.hmmm",
+					"match": "\\br\\d+\\b"
+				}
+			]
+		},
+		"labels": {
+			"patterns": [
+				{
+					"name": "entity.name.function.hmmm",
+					"match": "^\\d+"
+				}
+			]
+		},
+		"numbers":{
+			"patterns": [
+				{
+					"name": "constant.numeric.hmmm",
+					"match": "\\b(\\-?[0-9]+)\\b"
+				}
+			]
+		}
+	},
+	"scopeName": "source.hmmm"
+}

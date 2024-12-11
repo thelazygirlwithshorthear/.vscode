@@ -1,0 +1,846 @@
+{
+	"name": "vscode-janus-debug",
+	"displayName": "JavaScript Remote Debugger for JANUS Apps",
+	"description": "Debug your JANUS-based applications in Visual Studio Code",
+	"version": "1.7.5",
+	"publisher": "otris-software",
+	"author": {
+		"name": "otris software",
+		"email": "gitlab@otris.de"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://gitlab.otris.de/tools/vscode-janus-debug"
+	},
+	"bugs": {
+		"url": "https://gitlab.otris.de/tools/vscode-janus-debug/issues"
+	},
+	"engines": {
+		"vscode": "^1.78.0"
+	},
+	"categories": [
+		"Debuggers",
+		"Snippets",
+		"Other"
+	],
+	"icon": "img/extension-icon.png",
+	"galleryBanner": {
+		"color": "#009bd5",
+		"theme": "light"
+	},
+	"activationEvents": [
+		"workspaceContains:.vscode-janus-debug",
+		"workspaceContains:documents-scripting-settings.json",
+		"onCommand:extension.vscode-janus.debug.connectServerConsole",
+		"onCommand:extension.vscode-janus-debug.askForPassword",
+		"onCommand:extension.vscode-janus-debug.uploadSelectedScripts",
+		"onCommand:extension.vscode-janus-debug.uploadScript",
+		"onCommand:extension.vscode-janus-debug.downloadScript",
+		"onCommand:extension.vscode-janus-debug.runScript",
+		"onCommand:extension.vscode-janus-debug.debugScript",
+		"onCommand:extension.vscode-janus-debug.compareScript",
+		"onCommand:extension.vscode-janus-debug.uploadScriptsFromFolder",
+		"onCommand:extension.vscode-janus-debug.downloadAllScripts",
+		"onCommand:extension.vscode-janus-debug.reloadScripts",
+		"onCommand:extension.vscode-janus-debug.installIntellisense",
+		"onCommand:extension.vscode-janus-debug.wizardDownloadProject",
+		"onCommand:extension.vscode-janus-debug.wsAddressToLaunchConfig"
+	],
+	"main": "./out/src/extension",
+	"contributes": {
+		"breakpoints": [
+			{
+				"language": "javascript"
+			},
+			{
+				"language": "typescript"
+			}
+		],
+		"debuggers": [
+			{
+				"type": "janus",
+				"label": "JANUS Debugger",
+				"program": "./out/src/debugSession.js",
+				"runtime": "node",
+				"configurationAttributes": {
+					"launch": {
+						"required": [
+							"script",
+							"host",
+							"applicationPort",
+							"debuggerPort",
+							"username",
+							"currentConfiguration"
+						],
+						"properties": {
+							"script": {
+								"type": "string",
+								"description": "The script you want to debug."
+							},
+							"username": {
+								"type": "string",
+								"description": "A username (admin or username.principal). The script is executed in the context of this user."
+							},
+							"password": {
+								"type": "string",
+								"description": "The user's password."
+							},
+							"principal": {
+								"type": "string",
+								"description": "Your user's client affiliation. Leave empty if there is none."
+							},
+							"host": {
+								"type": "string",
+								"description": "IP address or name of the host where you want to run the script.",
+								"default": "localhost"
+							},
+							"applicationPort": {
+								"type": "number",
+								"description": "The port on which the target server listens.",
+								"default": 10000
+							},
+							"tls": {
+								"type": "boolean",
+								"description": "Determines if the server connection should be established using TLS.",
+								"default": false
+							},
+							"startTls": {
+								"type": "boolean",
+								"description": "Force startTLS. Throw an error, if the server doesn't follow the JANUS startTLS protocol.",
+								"default": false
+							},
+							"trustedCaPaths": {
+								"type": "array",
+								"description": "Only with startTLS. Override the trusted CA certificates. Default is to trust the well-known CAs curated by Mozilla."
+							},
+							"debuggerPort": {
+								"type": "number",
+								"description": "The debug port to attach to.",
+								"default": 8089
+							},
+							"currentConfiguration": {
+								"type": "boolean",
+								"description": "Set to true, if you are currently working with this configuration.",
+								"default": true
+							},
+							"timeout": {
+								"type": "number",
+								"description": "Time in ms until we give up trying to connect or waiting for an answer.",
+								"default": 6000
+							},
+							"localSources": {
+								"type": "object",
+								"description": "The local files",
+								"properties": {
+									"include": {
+										"type": "string",
+										"description": "Global pattern, like '**/*.{js,ts}' see https://code.visualstudio.com/api/references/vscode-api#GlobPattern",
+										"default": "**/*.js"
+									},
+									"exclude": {
+										"type": "string",
+										"description": "Global pattern, like '**/{node_modules,anyFolder}/**' see https://code.visualstudio.com/api/references/vscode-api#GlobPattern",
+										"default": "**/node_modules/**"
+									}
+								}
+							},
+							"stopOnEntry": {
+								"type": "boolean",
+								"description": "Automatically pause script after launch.",
+								"default": true
+							},
+							"log": {
+								"type": "object",
+								"description": "Lets you configure diagnostic logging of the debug adapter.",
+								"properties": {
+									"fileName": {
+										"type": "string",
+										"description": "The name of the logfile.",
+										"default": "${workspaceRoot}/vscode-janus-debug.log"
+									},
+									"logLevel": {
+										"type": "object",
+										"description": "The minimum loglevel(s) for messages written to the logfile.",
+										"properties": {
+											"default": {
+												"type": "string",
+												"enum": [
+													"Debug",
+													"Info",
+													"Warn",
+													"Error",
+													"None"
+												],
+												"description": "The default loglevel."
+											}
+										},
+										"additionalProperties": {
+											"type": "string",
+											"enum": [
+												"Debug",
+												"Info",
+												"Warn",
+												"Error"
+											]
+										},
+										"default": {
+											"default": "Debug"
+										}
+									}
+								}
+							}
+						}
+					},
+					"attach": {
+						"required": [
+							"host",
+							"debuggerPort"
+						],
+						"properties": {
+							"host": {
+								"type": "string",
+								"description": "IP address or name of the host where the application runs on.",
+								"default": "localhost"
+							},
+							"debuggerPort": {
+								"type": "number",
+								"description": "The debug port to attach to.",
+								"default": 8089
+							},
+							"timeout": {
+								"type": "number",
+								"description": "Time in ms until we give up trying to connect or waiting for an answer.",
+								"default": 6000
+							},
+							"localSources": {
+								"type": "object",
+								"description": "The local files",
+								"properties": {
+									"include": {
+										"type": "string",
+										"description": "Global pattern, like '**/*.{js,ts}' see https://code.visualstudio.com/api/references/vscode-api#GlobPattern",
+										"default": "**/*.js"
+									},
+									"exclude": {
+										"type": "string",
+										"description": "Global pattern, like '**/{node_modules,anyFolder}/**' see https://code.visualstudio.com/api/references/vscode-api#GlobPattern",
+										"default": "**/node_modules/**"
+									}
+								},
+								"sourceMaps": {
+									"type": "boolean",
+									"description": "Use JavaScript source maps (if they exist).",
+									"default": true
+								},
+								"sourceMapsOutDir": {
+									"type": "boolean",
+									"description": "Output directory of the generated sources including the source maps (note: .",
+									"default": true
+								}
+							},
+							"terminateOnDisconnect": {
+								"type": "boolean",
+								"description": "When the script is paused on disconnect, it will be terminated.",
+								"default": false
+							},
+							"breakOnAttach": {
+								"type": "boolean",
+								"description": "When debugger attaches to a script, the script is paused immediately. (Pause button doesn't work after attach due to a VS Code problem.)",
+								"default": false
+							},
+							"log": {
+								"type": "object",
+								"description": "Lets you configure diagnostic logging of the debug adapter.",
+								"properties": {
+									"fileName": {
+										"type": "string",
+										"description": "The name of the logfile.",
+										"default": "${workspaceRoot}/vscode-janus-debug.log"
+									},
+									"logLevel": {
+										"type": "object",
+										"description": "The minimum loglevel(s) for messages written to the logfile.",
+										"properties": {
+											"default": {
+												"type": "string",
+												"enum": [
+													"Debug",
+													"Info",
+													"Warn",
+													"Error"
+												],
+												"description": "The default loglevel."
+											}
+										},
+										"additionalProperties": {
+											"type": "string",
+											"enum": [
+												"Debug",
+												"Info",
+												"Warn",
+												"Error"
+											]
+										},
+										"default": {
+											"default": "Debug"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"configurationSnippets": [
+					{
+						"label": "JANUS Debugger: Launch",
+						"description": "Default configuration to connect with a JANUS server",
+						"body": {
+							"name": "Launch Script on Server",
+							"request": "launch",
+							"type": "janus",
+							"script": "${file}",
+							"username": "",
+							"password": "${command:extension.vscode-janus-debug.askForPassword}",
+							"principal": "",
+							"host": "localhost",
+							"applicationPort": 11000,
+							"tls": false,
+							"debuggerPort": 8089,
+							"currentConfiguration": true,
+							"stopOnEntry": true,
+							"log": {
+								"fileName": "${workspaceRoot}/vscode-janus-debug-launch.log",
+								"logLevel": {
+									"default": "Debug"
+								}
+							},
+							"timeout": 6000
+						}
+					},
+					{
+						"label": "JANUS Debugger: Attach",
+						"description": "Default configuration to attach to a JANUS server",
+						"body": {
+							"name": "Attach to Server",
+							"request": "attach",
+							"type": "janus",
+							"host": "localhost",
+							"debuggerPort": 8089,
+							"log": {
+								"fileName": "${workspaceRoot}/vscode-janus-debug-attach.log",
+								"logLevel": {
+									"default": "Debug"
+								}
+							}
+						}
+					}
+				]
+			}
+		],
+		"configuration": {
+			"properties": {
+				"vscode-janus-debug.uploadOnSave": {
+					"type": "array",
+					"default": [],
+					"description": "Always upload scripts in this list after save automatically."
+				},
+				"vscode-janus-debug.uploadManually": {
+					"type": "array",
+					"default": [],
+					"description": "Never automatically upload scripts in this list and never ask to."
+				},
+				"vscode-janus-debug.forceUpload": {
+					"type": "boolean",
+					"default": false,
+					"description": "Set to true, if the extension should upload scripts without checking the script on server."
+				},
+				"vscode-janus-debug.serverConsole": {
+					"description": "Settings that adjust the behavior of the Server Console window.",
+					"type": "object",
+					"title": "Server Console",
+					"properties": {
+						"autoConnect": {
+							"type": "boolean",
+							"default": false,
+							"description": "Try to auto connect Server Console every time the launch.json is changed"
+						}
+					}
+				},
+				"vscode-janus-debug.log": {
+					"deprecationMessage": "This setting will not be available in the new documentsOS extension",
+					"type": "object",
+					"title": "Extension log-file",
+					"description": "Location of the extension's log file",
+					"required": [
+						"logLevel",
+						"fileName"
+					],
+					"properties": {
+						"logLevel": {
+							"type": "string",
+							"default": "Debug",
+							"description": "Specifies the severity of messages that get logged to the file",
+							"enum": [
+								"Debug",
+								"Info",
+								"Warn",
+								"Error"
+							]
+						},
+						"fileName": {
+							"type": "string",
+							"description": "Path to the log file",
+							"default": "${workspaceRoot}/vscode-janus-debug-extension.log"
+						}
+					}
+				},
+				"vscode-janus-debug.uploadOnSaveGlobal": {
+					"type": "boolean",
+					"title": "Upload Scripts On Save",
+					"default": true,
+					"description": "Upload JavaScript files automatically every time the files are saved"
+				},
+				"vscode-janus-debug.encryptOnUpload": {
+					"deprecationMessage": "Deprecated: use vscode-janus-debug.encryptionOnUpload instead"
+				},
+				"vscode-janus-debug.encryptionOnUpload": {
+					"type": "string",
+					"enum": [
+						"default",
+						"always",
+						"never"
+					],
+					"title": "Set Encryption On Upload",
+					"default": "default",
+					"description": "Default: script will be encrypted, if it's encrypted on server or if it contains the crypt keyword"
+				},
+				"vscode-janus-debug.scriptParameters": {
+					"type": "boolean",
+					"title": "Up- and Download Parameters On Up- and Download Script",
+					"default": false,
+					"description": "If set to true, script parameters will be up- and downloaded together with the script"
+				},
+				"vscode-janus-debug.categories": {
+					"type": "boolean",
+					"title": "Associate categories with folders with postfix '.cat'",
+					"default": false,
+					"description": "Project folders with postfix '.cat' will be created and deleted on up- or download!"
+				},
+				"vscode-janus-debug.tsconfigPath": {
+					"type": "string",
+					"title": "tsconfig file for typescript transpiler.",
+					"default": "",
+					"description": "Path to a tsconfig file the extension should use for transpiling typescript."
+				},
+				"vscode-janus-debug.scriptLog": {
+					"deprecationMessage": "This setting will not be available in the new documentsOS extension",
+					"type": "object",
+					"title": "Write Script Output To Log File",
+					"description": "For now, only the return value is written to the log file",
+					"required": [
+						"fileName",
+						"returnValue"
+					],
+					"properties": {
+						"fileName": {
+							"type": "string",
+							"description": "Path to the script log file",
+							"default": "${workspaceRoot}/script.log"
+						},
+						"returnValue": {
+							"type": "boolean",
+							"default": true,
+							"description": "Set to true, if return value should be written to script log"
+						},
+						"append": {
+							"type": "boolean",
+							"default": false,
+							"description": "Set to true, if log should be appended to file"
+						}
+					}
+				},
+				"vscode-janus-debug.openScriptConsoleOnRunScript": {
+					"type": "boolean",
+					"default": true,
+					"deprecationMessage": "Deprecated, use scriptConsole.open"
+				},
+				"vscode-janus-debug.scriptConsole": {
+					"deprecationMessage": "This setting will not be available in the new documentsOS extension",
+					"type": "object",
+					"properties": {
+						"open": {
+							"type": "boolean",
+							"title": "Automatically open the Script Console when running a script.",
+							"default": true,
+							"description": "When set to 'true' the Script Console will be opened when the user runs a script from this extension."
+						},
+						"clear": {
+							"type": "boolean",
+							"title": "Automatically clears the Script Console before running a script.",
+							"default": true,
+							"description": "When set to 'true' the Script Console will be cleared before the output of the started script is shown."
+						}
+					}
+				},
+				"vscode-janus-debug.browser": {
+					"deprecationMessage": "'View Documentation In Browser' is deprecated. You can find the complete documentation in the portalScript.d.ts.",
+					"type": "string",
+					"description": "Specifies the browser for 'View Documentation In Browser'. (Based on https://github.com/pwnall/node-open)",
+					"enum": [
+						"iexplore",
+						"mozilla",
+						"chrome",
+						"safari",
+						"firefox"
+					]
+				},
+				"vscode-janus-debug.typingsRepository": {
+					"type": "object",
+					"description": "A repository which will be cloned to the projects typings-folder. Note: Requires git to be installed locally",
+					"properties": {
+						"url": {
+							"type": "string",
+							"description": "The URL to the repository"
+						},
+						"installPortalScripting": {
+							"type": "boolean",
+							"description": "If set to false, the default portal scripting type definitions will not be installed",
+							"default": true
+						}
+					}
+				}
+			}
+		},
+		"commands": [
+			{
+				"command": "extension.vscode-janus-debug.uploadSelectedScripts",
+				"title": "Upload Script(s)",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.uploadScript",
+				"title": "Upload Active Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.downloadScript",
+				"title": "Download Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.runScript",
+				"title": "Run Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.debugScript",
+				"title": "Upload and Debug Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.uploadRunScript",
+				"title": "Upload and Run Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.uploadRunActiveScript",
+				"title": "Upload+Run Active Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.compareScript",
+				"title": "Compare Script",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.uploadScriptsFromFolder",
+				"title": "Upload Scripts from Folder",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.downloadAllScripts",
+				"title": "Download Multiple Scripts",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.reloadScripts",
+				"title": "Download Scripts in Folder",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.viewDocumentation",
+				"title": "View Documentation in Browser",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus.debug.connectServerConsole",
+				"title": "Connect ServerConsole",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus.debug.disconnectServerConsole",
+				"title": "Disconnect ServerConsole",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.installIntellisense",
+				"title": "Install Intellisense",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.getTypes",
+				"title": "Get Types",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.showImportBundle",
+				"title": "Show Import Bundle",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.exportXML",
+				"title": "XML Export ...",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.importXML",
+				"title": "XML Import ...",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.uploadExportXML",
+				"title": "Upload Script and XML Export",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.wizardDownloadProject",
+				"title": "Wizard: Download / Create Project",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.maintenanceOperation",
+				"title": "Perform Maintenance Operation ...",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.clearPortalScriptCache",
+				"title": "Clear PortalScript Cache",
+				"category": "DOCUMENTS"
+			},
+			{
+				"command": "extension.vscode-janus-debug.wsAddressToLaunchConfig",
+				"title": "Write WS Address to launch.json (Beta)",
+				"category": "Janus V8 Debugger"
+			}
+		],
+		"keybindings": [
+			{
+				"key": "ctrl+alt+u",
+				"command": "extension.vscode-janus-debug.uploadScript"
+			},
+			{
+				"key": "ctrl+alt+r",
+				"command": "extension.vscode-janus-debug.runScript"
+			},
+			{
+				"key": "ctrl+alt+d",
+				"command": "extension.vscode-janus-debug.debugScript"
+			},
+			{
+				"key": "ctrl+alt+x",
+				"command": "extension.vscode-janus-debug.uploadRunActiveScript"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "extension.vscode-janus-debug.uploadSelectedScripts",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@1"
+				},
+				{
+					"command": "extension.vscode-janus-debug.uploadRunScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@2"
+				},
+				{
+					"command": "extension.vscode-janus-debug.downloadScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@3"
+				},
+				{
+					"command": "extension.vscode-janus-debug.compareScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@4"
+				},
+				{
+					"command": "extension.vscode-janus-debug.importXML",
+					"when": "resourceLangId == xml && !explorerResourceIsFolder",
+					"group": "DOCUMENTS@1"
+				},
+				{
+					"command": "extension.vscode-janus-debug.exportXML",
+					"when": "resourceLangId == xml && explorerResourceIsFolder && !explorerResourceIsRoot",
+					"group": "DOCUMENTS@1"
+				},
+				{
+					"command": "extension.vscode-janus-debug.downloadScript",
+					"when": "explorerResourceIsFolder && !explorerResourceIsRoot && resourceLangId != xml",
+					"group": "DOCUMENTS@2"
+				},
+				{
+					"command": "extension.vscode-janus-debug.reloadScripts",
+					"when": "explorerResourceIsFolder && !explorerResourceIsRoot && resourceLangId != xml",
+					"group": "DOCUMENTS@2"
+				},
+				{
+					"command": "extension.vscode-janus-debug.uploadScriptsFromFolder",
+					"when": "explorerResourceIsFolder && !explorerResourceIsRoot && resourceLangId != xml",
+					"group": "DOCUMENTS@4"
+				},
+				{
+					"command": "extension.vscode-janus-debug.downloadAllScripts",
+					"when": "explorerResourceIsFolder && !explorerResourceIsRoot && resourceLangId != xml",
+					"group": "DOCUMENTS@5"
+				},
+				{
+					"command": "extension.vscode-janus-debug.getTypes",
+					"when": "explorerResourceIsFolder && !explorerResourceIsRoot && resourceLangId != xml",
+					"group": "DOCUMENTS@5"
+				},
+				{
+					"command": "extension.vscode-janus-debug.installIntellisense",
+					"when": "explorerResourceIsRoot",
+					"group": "DOCUMENTS@1"
+				},
+				{
+					"command": "extension.vscode-janus-debug.wizardDownloadProject",
+					"when": "explorerResourceIsRoot",
+					"group": "DOCUMENTS@2"
+				},
+				{
+					"command": "extension.vscode-janus-debug.viewDocumentation",
+					"when": "explorerResourceIsRoot",
+					"group": "DOCUMENTS@3"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "extension.vscode-janus-debug.uploadScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@1"
+				},
+				{
+					"command": "extension.vscode-janus-debug.uploadRunActiveScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@2"
+				},
+				{
+					"command": "extension.vscode-janus-debug.debugScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@3"
+				},
+				{
+					"command": "extension.vscode-janus-debug.downloadScript",
+					"when": "resourceLangId == javascript || resourceLangId == typescript",
+					"group": "DOCUMENTS@4"
+				},
+				{
+					"command": "extension.vscode-janus-debug.compareScript",
+					"when": "resourceLangId == javascript",
+					"group": "DOCUMENTS@5"
+				},
+				{
+					"command": "extension.vscode-janus-debug.viewDocumentation",
+					"when": "(resourceLangId == javascript || resourceLangId == typescript) && editorHasSelection",
+					"group": "DOCUMENTS@5"
+				},
+				{
+					"command": "extension.vscode-janus-debug.viewDocumentation",
+					"when": "resourceLangId == typescript && editorHasSelection",
+					"group": "DOCUMENTS@1"
+				},
+				{
+					"command": "extension.vscode-janus-debug.importXML",
+					"when": "resourceLangId == xml",
+					"group": "DOCUMENTS@1"
+				}
+			]
+		},
+		"snippets": [
+			{
+				"language": "javascript",
+				"path": "./snippets/javascript.json"
+			},
+			{
+				"language": "typescript",
+				"path": "./snippets/javascript.json"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"postcompile": "node ./scripts/postBuildSteps.js",
+		"watch": "tsc -watch -p ./",
+		"test": "npm run compile && mocha --config ./test/mocharc.yml out/test/",
+		"lint": "tslint src/*.ts test/*.ts",
+		"coverage": "nyc mocha",
+		"report": "nyc report"
+	},
+	"dependencies": {
+		"@otris/node-sds": "^2.6.2",
+		"@types/uuid": "^2.0.29",
+		"fs-extra": "^4.0.0",
+		"glob": "^7.1.6",
+		"net": "^1.0.2",
+		"node-documents-scripting": "git+https://github.com/otris/node-documents-scripting.git#7.5.8",
+		"node-file-log": "git+https://git@github.com/otris/node-file-log#1.4.2",
+		"node-ipc": "^9.0.1",
+		"opn": "^5.4.0",
+		"reduce-for-promises": "^1.2.1",
+		"simple-git": "^3.13.0",
+		"source-map": "^0.7.3",
+		"strip-json-comments": "^2.0.1",
+		"tar": "^6.1.0",
+		"ttypescript": "^1.5.12",
+		"utf8": "^3.0.0",
+		"uuid": "^3.0.1",
+		"vscode-debugadapter": "^1.19.0",
+		"vscode-debugprotocol": "^1.19.0",
+		"wait-on": "^4.0.0"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^8.0.1",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "^7.0.22",
+		"@types/node-ipc": "^9.0.0",
+		"@types/source-map": "^0.5.7",
+		"@types/strip-json-comments": "0.0.28",
+		"@types/vscode": "1.78.0",
+		"@types/wait-on": "^4.0.0",
+		"@vscode/vsce": "2.20.1",
+		"mocha": "^10.0.0",
+		"mocha-multi-reporters": "^1.1.7",
+		"nyc": "^14.1.1",
+		"ts-node": "^8.3.0",
+		"tslint": "5.20.1",
+		"typescript": "^4.3.2",
+		"vscode-debugadapter-testsupport": "^1.19.0"
+	},
+	"__metadata": {
+		"id": "9e64aa29-e357-4075-ad8d-a8b9486a6727",
+		"publisherId": "d0dbe6c4-77bf-4817-ac52-00edf4fcca3a",
+		"publisherDisplayName": "otris software",
+		"targetPlatform": "undefined",
+		"isApplicationScoped": false,
+		"isPreReleaseVersion": false,
+		"hasPreReleaseVersion": false,
+		"installedTimestamp": 1729939308992,
+		"pinned": false,
+		"preRelease": false,
+		"source": "gallery"
+	}
+}

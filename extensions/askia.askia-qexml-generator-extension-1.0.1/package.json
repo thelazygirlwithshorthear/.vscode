@@ -1,0 +1,185 @@
+{
+	"name": "askia-qexml-generator-extension",
+	"displayName": "Askia QeXML Generator",
+	"description": "Convert plain text questionnaires to Askia Compliant XML",
+	"version": "1.0.1",
+	"publisher": "Askia",
+	"engines": {
+		"vscode": "^1.23.0"
+	},
+	"categories": [
+		"Programming Languages",
+		"Extension Packs",
+		"Linters",
+		"Debuggers",
+		"Other"
+	],
+	"icon": "images/icon.png",
+	"galleryBanner": {
+		"color": "#283B49"
+	},
+	"activationEvents": [
+		"onCommand:extension.defaultSettings",
+		"onCommand:extension.modalityToXml",
+		"onCommand:extension.closedSingleToXml",
+		"onCommand:extension.closedMultiToXml",
+		"onCommand:extension.openToXml",
+		"onCommand:extension.numericToXml",
+		"onCommand:extension.dateToXml",
+		"onCommand:extension.chapterToXml",
+		"onCommand:extension.questionInChapter",
+		"onCommand:extension.loopToXml",
+		"onCommand:extension.setRouting",
+		"onCommand:extension.finishXml",
+		"onCommand:extension.exportXml",
+		"onCommand:extension.prettifyAllXml"
+	],
+	"main": "./extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.defaultSettings",
+				"title": "Askia QeXML Generator: Modify default settings"
+			},
+			{
+				"command": "extension.modalityToXml",
+				"title": "Askia QeXML Generator: Convert to modalities"
+			},
+			{
+				"command": "extension.closedSingleToXml",
+				"title": "Askia QeXML Generator: Convert to single-coded closed question"
+			},
+			{
+				"command": "extension.closedMultiToXml",
+				"title": "Askia QeXML Generator: Convert to multi-coded closed question"
+			},
+			{
+				"command": "extension.openToXml",
+				"title": "Askia QeXML Generator: Convert to open question"
+			},
+			{
+				"command": "extension.numericToXml",
+				"title": "Askia QeXML Generator: Convert to numeric question"
+			},
+			{
+				"command": "extension.dateToXml",
+				"title": "Askia QeXML Generator: Convert to date question"
+			},
+			{
+				"command": "extension.chapterToXml",
+				"title": "Askia QeXML Generator: Convert to chapter"
+			},
+			{
+				"command": "extension.questionInChapter",
+				"title": "Askia QeXML Generator: Indent selection"
+			},
+			{
+				"command": "extension.loopToXml",
+				"title": "Askia QeXML Generator: Convert to loop"
+			},
+			{
+				"command": "extension.setRouting",
+				"title": "Askia QeXML Generator: Set a routing"
+			},
+			{
+				"command": "extension.finishXml",
+				"title": "Askia QeXML Generator: Finish XML"
+			},
+			{
+				"command": "extension.exportXml",
+				"title": "Askia QeXML Generator: Export XML to AskiaDesign"
+			},
+			{
+				"command": "extension.prettifyAllXml",
+				"title": "Askia QeXML Generator: Prettify XML"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "extension.defaultSettings",
+				"key": "ctrl+shift+s"
+			},
+			{
+				"command": "extension.modalityToXml",
+				"key": "ctrl+alt+a"
+			},
+			{
+				"command": "extension.closedSingleToXml",
+				"key": "ctrl+alt+s"
+			},
+			{
+				"command": "extension.closedMultiToXml",
+				"key": "ctrl+alt+m"
+			},
+			{
+				"command": "extension.openToXml",
+				"key": "ctrl+alt+o"
+			},
+			{
+				"command": "extension.numericToXml",
+				"key": "ctrl+alt+n"
+			},
+			{
+				"command": "extension.dateToXml",
+				"key": "ctrl+alt+d"
+			},
+			{
+				"command": "extension.chapterToXml",
+				"key": "ctrl+alt+c"
+			},
+			{
+				"command": "extension.questionInChapter",
+				"key": "ctrl+alt+i"
+			},
+			{
+				"command": "extension.loopToXml",
+				"key": "ctrl+alt+l"
+			},
+			{
+				"command": "extension.setRouting",
+				"key": "ctrl+alt+r"
+			},
+			{
+				"command": "extension.finishXml",
+				"key": "ctrl+alt+f"
+			},
+			{
+				"command": "extension.exportXml",
+				"key": "ctrl+alt+e"
+			},
+			{
+				"command": "extension.prettifyAllXml",
+				"key": "ctrl+alt+p"
+			}
+		]
+	},
+	"scripts": {
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "node ./node_modules/vscode/bin/test"
+	},
+	"devDependencies": {
+		"typescript": "^2.6.1",
+		"vscode": "^1.1.6"
+	},
+	"dependencies": {
+		"fs": "^0.0.1-security",
+		"child-process": "^1.0.2",
+		"xml-formatter": "^1.0.1",
+		"path": "^0.12.7",
+		"@types/node": "^7.0.43",
+		"@types/mocha": "^2.2.42"
+	},
+	"__metadata": {
+		"id": "1ad2d25a-b2fe-44d8-90e6-2652928dbd8b",
+		"publisherId": "bcebe58b-bcad-4a22-b0c1-a46821ff9865",
+		"publisherDisplayName": "Askia",
+		"targetPlatform": "undefined",
+		"isApplicationScoped": false,
+		"isPreReleaseVersion": false,
+		"hasPreReleaseVersion": false,
+		"installedTimestamp": 1724588867619,
+		"pinned": false,
+		"preRelease": false,
+		"source": "gallery"
+	}
+}

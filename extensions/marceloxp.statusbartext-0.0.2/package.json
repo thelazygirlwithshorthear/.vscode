@@ -1,0 +1,64 @@
+{
+	"name": "statusbartext",
+	"displayName": "Statusbar Text",
+	"description": "A custom Status Bar text to your vscode",
+	"publisher": "marceloxp",
+	"icon": "images/icon.png",
+	"license": "SEE LICENSE IN LICENSE",
+	"version": "0.0.2",
+	"engines": {
+		"vscode": "^1.92.0"
+	},
+	"categories": [
+		"Debuggers",
+		"Visualization"
+	],
+	"galleryBanner": {
+		"color": "#000080",
+		"theme": "dark"
+	},
+	"pricing": "Free",
+	"activationEvents": [
+		"onStartupFinished",
+		"onDidChangeConfiguration"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": []
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/mocha": "^10.0.7",
+		"@types/node": "20.x",
+		"@types/vscode": "^1.92.0",
+		"@vscode/test-cli": "^0.0.9",
+		"@vscode/test-electron": "^2.4.0",
+		"eslint": "^8.57.0",
+		"typescript": "^5.4.5"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/marceloxp/statusbartext.git"
+	},
+	"bugs": {
+		"url": "https://github.com/marceloxp/statusbartext/issues"
+	},
+	"homepage": "https://github.com/marceloxp/statusbartext#readme",
+	"__metadata": {
+		"id": "fe2490cf-6ae6-42d0-a49c-b5e0fbed21cc",
+		"publisherId": "f408e8dd-e711-46d8-ba1b-947d6464837c",
+		"publisherDisplayName": "Marcelo XP",
+		"targetPlatform": "undefined",
+		"isApplicationScoped": false,
+		"isPreReleaseVersion": false,
+		"hasPreReleaseVersion": false,
+		"installedTimestamp": 1731832096111,
+		"pinned": false,
+		"preRelease": false,
+		"source": "gallery"
+	}
+}

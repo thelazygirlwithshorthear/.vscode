@@ -1,0 +1,16 @@
+# Node
+node_modules/*
+
+# Visual Studio Code
+.vscode/*
+
+# vscode-janus-debug extension
+.vscode-janus-debug
+.compare
+.scriptParameters
+jsconfig.json
+typings/*
+
+# vscode-janus-debug debugger
+vscode-janus-debug-launch.log
+vscode-janus-debug-attach.log

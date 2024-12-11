@@ -1,0 +1,11 @@
+{
+	"comments": {
+		"lineComment": "#",
+	},
+	"colorizedBracketPairs": [
+		[
+			"pushr",
+			"popr"
+		]
+	]
+}

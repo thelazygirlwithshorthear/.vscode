@@ -1,0 +1,76 @@
+image: docker.otris.de/docker/ci-build
+
+stages:
+  - build
+  - test
+  - publish
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+compile:
+  stage: build
+  tags:
+    - kubernetes
+  script:
+    - npm ci
+    - npm run compile
+
+build:
+  stage: build
+  tags:
+    - kubernetes
+  needs: 
+    - job: compile
+  script:
+    - npm ci
+    - npx vsce package --baseContentUrl https://gitlab.otris.de/tools/vscode-janus-debug --baseImagesUrl https://gitlab.otris.de/tools/vscode-janus-debug/raw/master
+  artifacts:
+    paths:
+      - vscode-janus-debug-*.vsix
+
+test:
+  stage: test
+  tags:
+    - kubernetes
+  needs: 
+    - job: compile
+  script:
+    - npm ci
+    - npm run test
+  artifacts:
+    when: always
+    reports:
+      junit: test.xml
+
+publish:
+  stage: publish
+  tags:
+    - kubernetes
+  only:
+    - tags
+  needs: 
+    - job: build
+  script:
+    - cp vscode-janus-debug-*.vsix vscode-janus-debug.vsix
+    - printenv
+    - npx vsce publish -p $VSCODE_JANUS_DEBUG_CRED_PSW --packagePath vscode-janus-debug.vsix
+
+pages:
+  stage: publish
+  tags:
+    - kubernetes
+  script:
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.otris.de/tools/vscode-janus-debug.wiki.git
+    - cd vscode-janus-debug.wiki
+    - otrisbook
+    # Copy otrisbook output to folder "public" so that the doku can be serverd via gitlab pages
+    - cd .. && mkdir -p public && cp -r vscode-janus-debug.wiki/_book/* public
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - public
